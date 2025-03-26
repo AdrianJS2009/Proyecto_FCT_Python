@@ -32,4 +32,14 @@ La separación en módulos (models, schemas, crud, routers) es similar a separar
 El uso de routers en FastAPI te permite tener endpoints agrupados y mantener el código limpio.
 
 
+📦 ¿Qué es Pydantic?
+Pydantic se usa para:
+
+Validar automáticamente datos de entrada/salida (por ejemplo, al recibir datos de un formulario o JSON).
+
+Crear clases que representan estructuras de datos (llamadas schemas o DTOs).
+
+Convertir fácilmente datos desde/hacia objetos de la base de datos.
+
+
 
