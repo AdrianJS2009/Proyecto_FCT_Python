@@ -1,0 +1,35 @@
+FastAPI: Framework para crear APIs REST de forma rápida.
+
+Uvicorn: Servidor ASGI para correr nuestra aplicación FastAPI.
+
+SQLAlchemy: ORM para trabajar con la base de datos.
+
+Pydantic: Para validación y definición de esquemas (ya viene integrado con FastAPI).
+
+Alembic: Para migraciones de base de datos (opcional, pero recomendable para proyectos en producción).
+
+fct_python/
+├── app/
+│   ├── __init__.py
+│   ├── main.py          # Archivo de arranque de la aplicación
+│   ├── models.py        # Modelos SQLAlchemy (equivalentes a tus entities en Java)
+│   ├── schemas.py       # Esquemas Pydantic (equivalentes a tus DTOs)
+│   ├── crud.py          # Funciones de acceso a datos (servicios que manipulan la BD)
+│   ├── database.py      # Configuración de la base de datos y sesión
+│   ├── exceptions.py    # Definición de errores personalizados
+│   └── routers/         # Rutas/Controllers
+│       ├── __init__.py
+│       ├── drones.py
+│       ├── matrices.py
+│       └── flights.py
+├── alembic/             # Configuración y scripts de migración (opcional)
+├── requirements.txt
+└── README.md
+
+
+La separación en módulos (models, schemas, crud, routers) es similar a separar domain, DTOs, service y controllers en Java.
+
+El uso de routers en FastAPI te permite tener endpoints agrupados y mantener el código limpio.
+
+
+
