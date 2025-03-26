@@ -43,3 +43,9 @@ Convertir fácilmente datos desde/hacia objetos de la base de datos.
 
 
 
+💡¿Qué significa?
+Field(...): viene de Pydantic, y se usa para añadir validaciones personalizadas al modelo.
+
+...: significa "este campo es obligatorio".
+
+gt=0: significa "greater than 0" → el número debe ser mayor que cero.

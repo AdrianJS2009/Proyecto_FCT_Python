@@ -32,9 +32,11 @@ class Drone(DroneBase):
 class MatrixBase(BaseModel):
     max_x: int = Field(..., gt=0)
     max_y: int = Field(..., gt=0)
+    # "Este campo debe ser un número entero obligatorio, y su valor debe ser mayor que 0."
 
 class MatrixCreate(MatrixBase):
     pass
+    # pass	No hace nada, solo ocupa lugar para evitar errores de sintaxis
 
 class Matrix(MatrixBase):
     id: int
