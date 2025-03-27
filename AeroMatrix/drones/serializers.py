@@ -26,3 +26,13 @@ class DroneCommandSerializer(serializers.Serializer):
         child=serializers.ChoiceField(choices=["TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"]),
         allow_empty=False
     )
+
+class BatchDroneCommandRequestSerializer(serializers.Serializer):
+    commands = serializers.ListField(child=DroneCommandSerializer())
+
+
+class CommandsRequestSerializer(serializers.Serializer):
+    commands = serializers.ListField(
+        child=serializers.ChoiceField(choices=["TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"]),
+        allow_empty=False
+    )
