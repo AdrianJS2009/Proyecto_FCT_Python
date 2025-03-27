@@ -18,3 +18,11 @@ class DroneSerializer(serializers.ModelSerializer):
             "name": {"max_length": 50},
             "model": {"max_length": 50},
         }
+
+
+class DroneCommandSerializer(serializers.Serializer):
+    drone_id = serializers.IntegerField()
+    commands = serializers.ListField(
+        child=serializers.ChoiceField(choices=["TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"]),
+        allow_empty=False
+    )

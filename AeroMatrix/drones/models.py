@@ -47,7 +47,7 @@ class Drone(models.Model):
     x = models.PositiveIntegerField()
     y = models.PositiveIntegerField()
     orientation = models.CharField(max_length=1, choices=ORIENTATION_CHOICES)
-    matrix = models.ForeignKey(Matrix, related_name="drones")
+    matrix = models.ForeignKey(Matrix, related_name="drones", on_delete=models.CASCADE)
 
     def __str__(self):
         return f"Drone {self.id}: {self.name} ({self.model})"
