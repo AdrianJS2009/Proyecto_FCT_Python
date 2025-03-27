@@ -8,7 +8,9 @@ class OrientationEnum(enum.Enum):
     E = "E"
     O = "O"
 
-    # Métodos para girar 
+    # Turn methods
+
+
     def turn_left(self):
         mapping = {
             OrientationEnum.N: OrientationEnum.O,
@@ -27,7 +29,8 @@ class OrientationEnum(enum.Enum):
         }
         return mapping[self]
 
-# Para definir choices en un campo de Django, creamos una lista de tuplas
+
+# To define choices in a Django field, we create a list of tuples
 ORIENTATION_CHOICES = [(tag.value, tag.value) for tag in OrientationEnum]
 
 class Matrix(models.Model):
