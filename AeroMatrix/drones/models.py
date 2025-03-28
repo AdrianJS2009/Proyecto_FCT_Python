@@ -30,7 +30,7 @@ class OrientationEnum(enum.Enum):
         return mapping[self]
 
 
-# To define choices in a Django field, we create a list of tuples
+# Las opcions van por tuplas (valor, etiqueta)
 ORIENTATION_CHOICES = [(tag.value, tag.value) for tag in OrientationEnum]
 
 class Matrix(models.Model):

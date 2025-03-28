@@ -23,11 +23,11 @@ class UnsupportedCommandException(APIException):
 
 
 def custom_exception_handler(exc, context):
-    # Hay que llamar primero al manejador de excepciones por defecto
+    # Hay que llamar primero al manejador de excepciones default
     response = exception_handler(exc, context)
 
     if response is not None:
-        #Si hay respuesta con datos, la modificamos
+        #Si retorna con datos, la modificamos
         if isinstance(response.data, list):
             error_message = " ".join(response.data)
         elif isinstance(response.data, dict):
