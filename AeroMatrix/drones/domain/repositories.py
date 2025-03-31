@@ -1,10 +1,12 @@
 from drones.infrastructure.models import Drone, Matrix
 
+
 def find_drones_by_position_and_matrix(x: int, y: int, matrix_id: int):
     return Drone.objects.filter(x=x, y=y, matrix_id=matrix_id)
 
 def find_drones_by_matrix(matrix_id: int):
     return Drone.objects.filter(matrix_id=matrix_id)
+
 
 def exists_drone_by_model_and_matrix(model: str, matrix_id: int) -> bool:
     return Drone.objects.filter(model=model, matrix_id=matrix_id).exists()

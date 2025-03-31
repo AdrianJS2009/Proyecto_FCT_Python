@@ -13,7 +13,8 @@ from .drone_serializers import DroneSerializer
 from .matrix_serializers import MatrixSerializer
 from drones.interfaces.command_serializers import (
     CommandsRequestSerializer, 
-    BatchDroneCommandRequestSerializer
+    BatchDroneCommandRequestSerializer,
+    BulkCommandSerializer
 )
 from drones.application.services import (
     create_drone,
@@ -35,33 +36,39 @@ from drones.application.services import (
 # --- Drone Controller ---
 @extend_schema_view(
     list=extend_schema(
+        tags=["Drones"],
         summary="List Drones",
         description="Retrieves the complete list of drones registered in the system.",
         responses=DroneSerializer(many=True)
     ),
     retrieve=extend_schema(
+        tags=["Drones"],
         summary="Get Drone",
         description="Retrieves the information of a specific drone by its ID.",
         responses=DroneSerializer
     ),
     create=extend_schema(
+        tags=["Drones"],
         summary="Create Drone",
         description="Creates a new drone using the provided data.",
         request=DroneSerializer,
         responses={201: DroneSerializer}
     ),
     update=extend_schema(
+        tags=["Drones"],
         summary="Update Drone",
         description="Updates the information of an existing drone identified by its ID.",
         request=DroneSerializer,
         responses=DroneSerializer
     ),
     destroy=extend_schema(
+        tags=["Drones"],
         summary="Delete Drone",
         description="Deletes a drone from the system.",
         responses={200: OpenApiResponse(description="Drone successfully deleted.")}
     ),
     execute_commands=extend_schema(
+        tags=["Drones"],
         summary="Execute Commands on Drone",
         description="Sends a sequence of movement commands to a specific drone.",
         request=CommandsRequestSerializer,
@@ -107,8 +114,9 @@ class DroneViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        drone = delete_drone(int(pk))
-        return Response({"message": f"Drone ID {drone.id} deleted."}, status=status.HTTP_200_OK)
+        drone_id = int(pk)
+        delete_drone(drone_id)
+        return Response({"message": f"Drone ID {drone_id} deleted."}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def execute_commands(self, request, pk=None):
@@ -121,26 +129,25 @@ class DroneViewSet(viewsets.ViewSet):
 
 # --- Flight Controller ---
 @extend_schema(
-    summary="Execute Sequential Commands for Multiple Drones",
-    description="Executes a sequence of commands on multiple drones at once. Drone IDs are passed as query parameters.",
-    request=CommandsRequestSerializer,
+    tags=["Flight Control"],
+    summary="Execute Same Commands on Multiple Drones",
+    description="Executes the same sequence of commands on multiple drones. Drone IDs and the command list are passed in the request body.",
+    request=BulkCommandSerializer,
     responses={200: OpenApiResponse(description="Commands executed successfully.")}
 )
 class FlightView(APIView):
     def post(self, request):
-        drone_ids = request.query_params.getlist('droneIds')
-        serializer = CommandsRequestSerializer(data=request.data)
+        serializer = BulkCommandSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        commands = serializer.validated_data['commands']
-
-        # Convertir los IDs a enteros
-        drone_ids = list(map(int, drone_ids))
+        drone_ids = serializer.validated_data["drone_ids"]
+        commands = serializer.validated_data["commands"]
         execute_commands_in_sequence(drone_ids, commands)
         return Response(status=status.HTTP_200_OK)
 
 
 # --- Batch Command Controller ---
 @extend_schema(
+    tags=["Flight Control"],
     summary="Execute Batch Commands for Multiple Drones",
     description="Executes different sequences of commands for various drones in a single request.",
     request=BatchDroneCommandRequestSerializer,
@@ -158,28 +165,33 @@ class BatchCommandView(APIView):
 # --- Matrix Controller ---
 @extend_schema_view(
     list=extend_schema(
+        tags=["Matrices"],
         summary="List Matrices",
         description="Retrieves the complete list of registered flight matrices.",
         responses=MatrixSerializer(many=True)
     ),
     retrieve=extend_schema(
+        tags=["Matrices"],
         summary="Get Matrix",
         description="Retrieves the information of a specific matrix by its ID.",
         responses=MatrixSerializer
     ),
     create=extend_schema(
+        tags=["Matrices"],
         summary="Create Matrix",
         description="Creates a new matrix with the specified boundaries.",
         request=MatrixSerializer,
         responses={201: MatrixSerializer}
     ),
     update=extend_schema(
+        tags=["Matrices"],
         summary="Update Matrix",
         description="Updates the boundaries of an existing matrix.",
         request=MatrixSerializer,
         responses=MatrixSerializer
     ),
     destroy=extend_schema(
+        tags=["Matrices"],
         summary="Delete Matrix",
         description="Deletes a matrix as long as it has no associated drones.",
         responses={204: OpenApiResponse(description="Matrix successfully deleted.")}
