@@ -11,10 +11,11 @@ AeroMatrix is a backend API project for managing drones flying within defined gr
 ## 🚀 Features
 
 - 📦 Drone and Matrix management (CRUD)
-- 📡 Execute flight commands (turn, move, batch)
+- 📡 Execute flight commands (turn, move, batch, multi-drone)
 - 🚧 Collision and boundary validation
+- 💥 Validation of input, logic conflicts, and duplicates
+- 🧪 Custom exception handling with consistent error responses
 - 📘 Auto-generated API documentation (Swagger & ReDoc)
-- 🧪 Custom exception handling
 
 ---
 
@@ -27,12 +28,10 @@ AeroMatrix/
 │   ├── urls.py                # 🌍 Global URL configuration
 ├── drones/
 │   ├── models.py              # 🧠 Data models: Drone, Matrix, Enums
-│   ├── serializers.py         # 📦 Serializers (DTOs) for input/output
-│   ├── exceptions.py          # 🚨 Custom exceptions & handlers
-│   ├── repositories.py        # 🔎 Custom ORM queries
-│   ├── services.py            # 🔧 Business logic
-│   ├── views.py               # 🌐 API views and ViewSets
-│   ├── urls.py                # 📍 Local routes for the app
+│   ├── serializers/           # 📦 Drone and Matrix serializers
+│   ├── interfaces/            # 🌐 ViewSets and controllers
+│   ├── application/           # 🔧 Business logic and services
+│   ├── domain/                # 🧱 Domain layer (repositories, exceptions)
 ├── manage.py                  # 🚀 Django entrypoint
 ```
 
@@ -56,17 +55,12 @@ Main dependencies:
 
 ## ⚙️ Running the Project
 
-1. Create and activate a virtual environment:
-
 ```bash
+# Setup environment
 python -m venv venv
-venv\Scripts\activate  # On Windows
-source venv/bin/activate  # On Linux/Mac
-```
+source venv/bin/activate  # or venv\Scripts\activate on Windows
 
-2. Run migrations and start the development server:
-
-```bash
+# Apply migrations and run server
 python manage.py migrate
 python manage.py runserver
 ```
@@ -83,35 +77,59 @@ python manage.py runserver
 
 ## 📌 Endpoints Overview
 
-### Drone Endpoints
+### 🛩️ Drone Endpoints
 
-- `GET /api/drones/` - List all drones
-- `POST /api/drones/` - Create a new drone
-- `GET /api/drones/{id}/` - Retrieve a specific drone
-- `PUT /api/drones/{id}/` - Update a specific drone
-- `DELETE /api/drones/{id}/` - Delete a specific drone
-- `POST /api/drones/{id}/execute_commands/` - Execute commands for a specific drone
+| Method | Endpoint                             | Description                 |
+| ------ | ------------------------------------ | --------------------------- |
+| GET    | `/api/drones/`                       | List all drones             |
+| POST   | `/api/drones/`                       | Create a new drone          |
+| GET    | `/api/drones/{id}/`                  | Retrieve a specific drone   |
+| PUT    | `/api/drones/{id}/`                  | Update a specific drone     |
+| DELETE | `/api/drones/{id}/`                  | Delete a specific drone     |
+| POST   | `/api/drones/{id}/execute_commands/` | Execute commands on a drone |
 
-### Flight Endpoints
+### 🚀 Flight Command Endpoints
 
-- `POST /api/flights/` - Execute commands in sequence for multiple drones (query param: `droneIds`)
+| Method | Endpoint                        | Description                                                 |
+| ------ | ------------------------------- | ----------------------------------------------------------- |
+| POST   | `/api/flights/`                 | Execute same commands for multiple drones (via query param) |
+| POST   | `/api/flights/drones/commands/` | Execute same commands for drones (IDs in body)              |
+| POST   | `/api/flights/batch-commands/`  | Execute different commands on different drones              |
 
-### Batch Command Endpoints
+### 🗺️ Matrix Endpoints
 
-- `POST /api/flights/batch-commands/` - Execute batch commands for multiple drones
+| Method | Endpoint              | Description                    |
+| ------ | --------------------- | ------------------------------ |
+| GET    | `/api/matrices/`      | List all matrices              |
+| POST   | `/api/matrices/`      | Create a new matrix            |
+| GET    | `/api/matrices/{id}/` | Retrieve a specific matrix     |
+| PUT    | `/api/matrices/{id}/` | Update a specific matrix       |
+| DELETE | `/api/matrices/{id}/` | Delete a matrix (if no drones) |
 
-### Matrix Endpoints
+---
 
-- `GET /api/matrices/` - List all matrices
-- `POST /api/matrices/` - Create a new matrix
-- `GET /api/matrices/{id}/` - Retrieve a specific matrix
-- `PUT /api/matrices/{id}/` - Update a specific matrix
-- `DELETE /api/matrices/{id}/` - Delete a specific matrix
+## 💡 Example Commands
+
+```json
+POST /api/flights/drones/commands/
+{
+  "drone_ids": [1, 2, 3],
+  "commands": ["TURN_LEFT", "MOVE_FORWARD"]
+}
+```
+
+```json
+POST /api/flights/batch-commands/
+{
+  "commands": [
+    { "drone_id": 1, "commands": ["MOVE_FORWARD"] },
+    { "drone_id": 2, "commands": ["TURN_LEFT", "MOVE_FORWARD"] }
+  ]
+}
+```
 
 ---
 
 ## 🙋‍♂️ Author
 
 Developed by [@ajsantiago](mailto:ajsantiago@example.com) as part of a learning process and FCT internship project.
-
----
