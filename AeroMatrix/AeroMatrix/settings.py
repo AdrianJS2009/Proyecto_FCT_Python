@@ -131,7 +131,8 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Gestión de Drones API',
-    'DESCRIPTION': 'API para gestionar drones, matrices y vuelos.',
+    'TITLE': 'Drone Management API',
+    'DESCRIPTION': 'REST API for managing drones, matrices, and flight operations.',
     'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }

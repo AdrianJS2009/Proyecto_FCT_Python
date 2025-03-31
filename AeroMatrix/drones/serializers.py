@@ -35,13 +35,6 @@ class MatrixSerializer(serializers.ModelSerializer):
         fields = ['id', 'max_x', 'max_y', 'drones']
 
 
-class DroneSerializer(serializers.ModelSerializer):
-    # Representa la relación con Matrix mediante su id
-    matrix_id = serializers.IntegerField()
-
-    class Meta:
-        model = Drone
-        fields = ['id', 'name', 'model', 'x', 'y', 'orientation', 'matrix_id']
 
 
 class UpdateDroneRequestSerializer(serializers.Serializer):
