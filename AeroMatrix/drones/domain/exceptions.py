@@ -23,29 +23,40 @@ class UnsupportedCommandException(APIException):
 
 
 def custom_exception_handler(exc, context):
-    # First, call the default exception handler
     response = exception_handler(exc, context)
 
     if response is not None:
-        # If it returns with data, modify it
-        if isinstance(response.data, list):
-            error_message = " ".join(response.data)
-        elif isinstance(response.data, dict):
-            # I have seen that "details" are included as a response in examples
-            if "detail" in response.data:
-                error_message = response.data["detail"]
-            else:
-                error_message = str(response.data)
-
+        message = extract_message_from_response(response)
         response.data = {
             "code": getattr(exc, 'default_code', 'error'),
-            "message": error_message
+            "message": message
         }
     else:
-        # For any exception not handled, return a 500
-        response = Response({
-            "code": "internal_server_error",
-            "message": f"Unexpected error occurred: {str(exc)}"
-        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        response = handle_unexpected_error(exc)
 
     return response
+
+
+def extract_message_from_response(response):
+    if isinstance(response.data, dict):
+        if "detail" in response.data:
+            return response.data["detail"]
+        return flatten_field_errors(response.data)
+    return str(response.data)
+
+
+def flatten_field_errors(data):
+    messages = []
+    for key, value in data.items():
+        if isinstance(value, list):
+            messages.extend(value)
+        else:
+            messages.append(str(value))
+    return " ".join(messages)
+
+
+def handle_unexpected_error(exc):
+    return Response({
+        "code": "internal_server_error",
+        "message": f"Unexpected error occurred: {str(exc)}"
+    }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

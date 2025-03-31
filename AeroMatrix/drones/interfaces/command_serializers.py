@@ -27,3 +27,15 @@ class BulkCommandSerializer(serializers.Serializer):
         child=serializers.ChoiceField(choices=["TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"]),
         help_text="Sequence of commands to execute on all provided drones"
     )
+
+class MultiDroneCommandRequestSerializer(serializers.Serializer):
+    drone_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        allow_empty=False,
+        help_text="List of drone IDs to apply the same commands to"
+    )
+    commands = serializers.ListField(
+        child=serializers.ChoiceField(choices=["TURN_LEFT", "TURN_RIGHT", "MOVE_FORWARD"]),
+        allow_empty=False
+    )
+

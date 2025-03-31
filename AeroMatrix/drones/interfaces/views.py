@@ -14,7 +14,8 @@ from .matrix_serializers import MatrixSerializer
 from drones.interfaces.command_serializers import (
     CommandsRequestSerializer, 
     BatchDroneCommandRequestSerializer,
-    BulkCommandSerializer
+    BulkCommandSerializer,
+    MultiDroneCommandRequestSerializer  # Import necesario
 )
 from drones.application.services import (
     create_drone,
@@ -160,6 +161,26 @@ class BatchCommandView(APIView):
         batch_data = serializer.validated_data['commands']
         execute_batch_commands(batch_data)
         return Response(status=status.HTTP_202_ACCEPTED)
+
+
+# --- Multi Drone Same Commands Controller ---
+@extend_schema(
+    tags=["Flight Control"],
+    summary="Execute Same Commands on Multiple Drones",
+    description="Executes the same sequence of commands on multiple drones. Drone IDs and the command list are passed in the request body.",
+    request=MultiDroneCommandRequestSerializer,
+    responses={200: OpenApiResponse(description="Commands executed successfully.")}
+)
+class MultiDroneSameCommandsView(APIView):
+    def post(self, request):
+        serializer = MultiDroneCommandRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        drone_ids = serializer.validated_data['drone_ids']
+        commands = serializer.validated_data['commands']
+
+        execute_commands_in_sequence(drone_ids, commands)
+        return Response(status=status.HTTP_200_OK)
 
 
 # --- Matrix Controller ---

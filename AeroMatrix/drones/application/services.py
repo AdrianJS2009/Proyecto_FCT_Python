@@ -7,6 +7,8 @@ from drones.domain.repositories import (
     exists_drone_by_model_and_matrix,
     exists_drone_by_name_and_matrix
 )
+from rest_framework.exceptions import ValidationError
+
 
 # -----------------------
 # Funciones Helpers
@@ -231,11 +233,11 @@ def check_global_collisions(drone: Drone):
 
 @transaction.atomic
 def create_matrix(max_x: int, max_y: int) -> Matrix:
-    max_size = 100
+    if max_x is None or max_y is None:
+        raise ValidationError("Both max_x and max_y are required.")
     if max_x <= 0 or max_y <= 0:
-        raise ConflictException(f"Matrix dimensions must be positive (maxX: {max_x}, maxY: {max_y})")
-    if max_x > max_size or max_y > max_size:
-        raise ConflictException(f"Matrix dimensions exceed maximum allowed size ({max_size}).")
+        raise ValidationError("Matrix dimensions must be greater than 0.")
+    
     matrix = Matrix.objects.create(max_x=max_x, max_y=max_y)
     return matrix
 

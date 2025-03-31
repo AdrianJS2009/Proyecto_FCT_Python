@@ -19,3 +19,8 @@ class MatrixSerializer(serializers.ModelSerializer):
     class Meta:
         model = Matrix
         fields = ['id', 'max_x', 'max_y', 'drones']
+
+def validate_max_x(self, value):
+    if value <= 0:
+        raise serializers.ValidationError("max_x must be greater than 0.")
+    return value
