@@ -128,7 +128,7 @@ def update_drone_attributes(drone: Drone, new_matrix: Matrix, name: str, model: 
     drone.orientation = orientation
     drone.save()
 
-@transaction.atomic
+
 def delete_drone(drone_id: int) -> Drone:
     try:
         drone = Drone.objects.get(pk=drone_id)
