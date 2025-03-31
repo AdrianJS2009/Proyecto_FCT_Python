@@ -1,4 +1,4 @@
-from .models import Drone, Matrix
+from drones.infrastructure.models import Drone, Matrix
 
 def find_drones_by_position_and_matrix(x: int, y: int, matrix_id: int):
     return Drone.objects.filter(x=x, y=y, matrix_id=matrix_id)

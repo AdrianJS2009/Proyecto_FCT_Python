@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.views import exception_handler
 from rest_framework.response import Response
 
-# Excepciones Personalizadas
+
 
 class ConflictException(APIException):
     status_code = status.HTTP_409_CONFLICT
@@ -23,15 +23,15 @@ class UnsupportedCommandException(APIException):
 
 
 def custom_exception_handler(exc, context):
-    # Hay que llamar primero al manejador de excepciones default
+    # First, call the default exception handler
     response = exception_handler(exc, context)
 
     if response is not None:
-        #Si retorna con datos, la modificamos
+        # If it returns with data, modify it
         if isinstance(response.data, list):
             error_message = " ".join(response.data)
         elif isinstance(response.data, dict):
-            # He visto que se incluyen "details" como respuesta en ejemplos
+            # I have seen that "details" are included as a response in examples
             if "detail" in response.data:
                 error_message = response.data["detail"]
             else:
@@ -42,7 +42,7 @@ def custom_exception_handler(exc, context):
             "message": error_message
         }
     else:
-        # Alguna excepcion que no controle suelto el 500
+        # For any exception not handled, return a 500
         response = Response({
             "code": "internal_server_error",
             "message": f"Unexpected error occurred: {str(exc)}"

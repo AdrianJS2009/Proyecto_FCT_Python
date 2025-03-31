@@ -8,14 +8,14 @@ from drf_spectacular.utils import (
     extend_schema_view,
     OpenApiResponse
 )
-from .models import Drone, Matrix
-from .serializers import (
-    DroneSerializer, 
-    MatrixSerializer, 
+from drones.infrastructure.models import Drone, Matrix
+from .drone_serializers import DroneSerializer
+from .matrix_serializers import MatrixSerializer
+from drones.interfaces.command_serializers import (
     CommandsRequestSerializer, 
     BatchDroneCommandRequestSerializer
 )
-from .services import (
+from drones.application.services import (
     create_drone,
     get_drone,
     update_drone,
@@ -30,6 +30,7 @@ from .services import (
     delete_matrix,
     list_matrices
 )
+
 
 # --- Drone Controller ---
 @extend_schema_view(

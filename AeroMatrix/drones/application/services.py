@@ -1,7 +1,7 @@
 from django.db import transaction
-from .models import Drone, Matrix, OrientationEnum
-from .exceptions import ConflictException, NotFoundException, UnsupportedCommandException
-from .repositories import (
+from drones.infrastructure.models import Drone, Matrix, OrientationEnum
+from drones.domain.exceptions import ConflictException, NotFoundException, UnsupportedCommandException
+from drones.domain.repositories import (
     find_drones_by_position_and_matrix,
     find_drones_by_matrix,
     exists_drone_by_model_and_matrix,
@@ -18,8 +18,6 @@ def validate_position(matrix: Matrix, x: int, y: int):
             f"Invalid coordinates ({x},{y}) for matrix {matrix.id} "
             f"(Max X: {matrix.max_x}, Max Y: {matrix.max_y})"
         )
-    
-    
 
 # -----------------------
 # Drone Service
@@ -181,7 +179,6 @@ def execute_commands_in_sequence(drone_ids: list, commands: list):
 
 @transaction.atomic
 def execute_batch_commands(batch_commands: list):
-   
     for item in batch_commands:
         drone_id = item.get('drone_id')
         commands = item.get('commands')
@@ -189,12 +186,10 @@ def execute_batch_commands(batch_commands: list):
             raise ValueError(f"Drone {drone_id} has no commands to execute.")
         if not Drone.objects.filter(pk=drone_id).exists():
             raise NotFoundException(f"Drone ID {drone_id} not found in batch request.")
-  
         drone = execute_commands(drone_id, commands)
         check_global_collisions(drone)
 
 def move_forward(drone: Drone):
-
     x, y = drone.x, drone.y
     matrix = drone.matrix
 
@@ -213,9 +208,7 @@ def move_forward(drone: Drone):
             f"Matrix limits: (0-{matrix.max_x}, 0-{matrix.max_y})"
         )
 
-
     others = Drone.objects.filter(x=x, y=y, matrix=matrix)
-   
     if others.exists() and (others.count() > 1 or (others.count() == 1 and others.first().id != drone.id)):
         conflict_drone = others.first()
         raise ConflictException(
@@ -225,7 +218,6 @@ def move_forward(drone: Drone):
     drone.y = y
 
 def check_global_collisions(drone: Drone):
-    
     drones_in_same_position = Drone.objects.filter(x=drone.x, y=drone.y, matrix=drone.matrix)
     for other in drones_in_same_position:
         if other.id != drone.id:
