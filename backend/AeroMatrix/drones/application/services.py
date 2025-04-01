@@ -238,6 +238,7 @@ def create_matrix(max_x: int, max_y: int) -> Matrix:
     if max_x <= 0 or max_y <= 0:
         raise ValidationError("Matrix dimensions must be greater than 0.")
     
+    
     matrix = Matrix.objects.create(max_x=max_x, max_y=max_y)
     return matrix
 
@@ -270,6 +271,8 @@ def get_matrix(matrix_id: int) -> Matrix:
         return Matrix.objects.get(pk=matrix_id)
     except Matrix.DoesNotExist:
         raise NotFoundException(f"Matrix ID {matrix_id} not found")
+    
+    
 
 @transaction.atomic
 def delete_matrix(matrix_id: int):

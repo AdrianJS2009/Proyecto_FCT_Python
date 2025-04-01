@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -135,4 +136,12 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'REST API for managing drones, matrices, and flight operations.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Panel AeroMatrix",
+    "site_header": "Administración AeroMatrix",
+    "welcome_sign": "Bienvenido/a al panel de control",
+    "copyright": "AeroMatrix",
 }
