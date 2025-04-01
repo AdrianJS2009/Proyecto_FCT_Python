@@ -130,6 +130,42 @@ POST /api/flights/batch-commands/
 
 ---
 
+## 🔐 Roles and Permissions
+
+### Defined Groups
+
+- **Operator**
+
+  - ✅ Can view drones and matrices.
+  - ❌ Cannot add, edit, or delete.
+
+- **Drone Manager**
+
+  - ✅ Can view, add, and modify drones.
+  - ❌ Cannot delete drones or manage matrices.
+
+- **Supervisor**
+
+  - ✅ Can view, add, and modify matrices.
+  - ❌ Cannot delete matrices or manage drones.
+
+- **Superuser**
+  - 🔓 Full access.
+
+### Matrix of Permissions
+
+| Group         | Model  | View | Add | Edit | Delete |
+| ------------- | ------ | ---- | --- | ---- | ------ |
+| Operator      | Drone  | ✅   | ❌  | ❌   | ❌     |
+| Operator      | Matrix | ✅   | ❌  | ❌   | ❌     |
+| Drone Manager | Drone  | ✅   | ✅  | ✅   | ❌     |
+| Drone Manager | Matrix | ❌   | ❌  | ❌   | ❌     |
+| Supervisor    | Drone  | ❌   | ❌  | ❌   | ❌     |
+| Supervisor    | Matrix | ✅   | ✅  | ✅   | ❌     |
+| Superuser     | Both   | ✅   | ✅  | ✅   | ✅     |
+
+---
+
 ## 🙋‍♂️ Author
 
 Developed by [@ajsantiago](mailto:ajsantiago@example.com) as part of a learning process and FCT internship project.

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "jazzmin",
+    "import_export",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'drones.middleware.CurrentUserMiddleware',
+
 ]
 
 ROOT_URLCONF = 'AeroMatrix.urls'
@@ -144,4 +147,12 @@ JAZZMIN_SETTINGS = {
     "site_header": "Administración AeroMatrix",
     "welcome_sign": "Bienvenido/a al panel de control",
     "copyright": "AeroMatrix",
+    "icons": {
+    "drones.Drone": "fas fa-helicopter",
+    "drones.Matrix": "fas fa-th",
+    "auth.User": "fas fa-user",
+    "auth.Group": "fas fa-users-cog",
+    "admin.LogEntry": "fas fa-scroll",
+},
+
 }
